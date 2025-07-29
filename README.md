@@ -114,19 +114,97 @@ Secure Shell 内置 SFTP 客户端，无需额外安装。
 sftp 用户名@主机[:端口]
 ```
 
-使用标准命令：
-- `get remote_path [local_path]` 下载文件
-- `put local_path [remote_path]` 上传文件
-- `ls` 列出远程目录
-- `lls` 列出本地目录
-- `cd` 切换远程目录
-- `lcd` 切换本地目录
+#### 目录操作命令：
+- `pwd` 查看远端当前目录
+- `lpwd` 查看本地当前目录
+- `ls` 或 `ls -l` 列出远程目录文件
+- `lls` 列出本地目录文件
+- `cd <path>` 切换远程目录
+- `lcd <path>` 切换本地目录
 
-### 6.2 Chrome OS SFTP 挂载
+#### 文件下载命令：
+
+**基本语法：**
+```bash
+get <remote_path> [<local_path>]
+```
+
+**示例：**
+```bash
+# 下载到当前本地目录（保持原文件名）
+sftp> get filebeat-7.9.1-x86_64.rpm
+
+# 指定本地保存路径和文件名
+sftp> get filebeat-7.9.1-x86_64.rpm /home/user/downloads/filebeat-7.9.1-x86_64.rpm
+
+# 批量下载（使用通配符）
+sftp> mget *.rpm
+```
+
+**注意：** 如果不指定 `<local_path>`，下载的文件会保存在当前本地工作目录，文件名与远端相同。
+
+#### 文件上传命令：
+
+**基本语法：**
+```bash
+put <local_path> [<remote_path>]
+```
+
+**示例：**
+```bash
+# 上传到当前远程目录
+sftp> put local_file.txt
+
+# 指定远程保存路径
+sftp> put local_file.txt /remote/path/remote_file.txt
+
+# 批量上传
+sftp> mput *.txt
+```
+
+### 6.2 SFTP 操作流程
+
+#### 确认远端与本地目录
+
+1. **查看远端目录**
+   ```bash
+   sftp> pwd
+   ```
+   确认你目前所在的远端路径（如 `/root/soft/`）
+
+2. **查看远端文件列表**
+   ```bash
+   sftp> ls -l
+   ```
+   确认目标文件名完全一致（注意大小写和文件后缀）
+
+3. **查看本地目录**
+   ```bash
+   sftp> lpwd
+   ```
+   确认本地当前保存下载文件的位置
+
+4. **（可选）切换本地目录**
+   ```bash
+   sftp> lcd /desired/local/path
+   ```
+   将本地工作目录切换到你希望存放文件的路径
+
+### 6.3 常见问题排查
+
+#### "找不到文件"
+- 检查 `ls -l` 输出的文件名是否与命令中完全一致（包括大小写、路径）
+- 如果当前不在目标目录，可先 `cd /target/path/` 后再执行 `get`
+
+#### 下载后找不到文件
+- 确认本地下载目录：使用 `lpwd` 查看当前本地目录，或切换到预期目录后再下载
+- 可在本地终端用 `ls` 或文件管理器查看下载结果
+
+### 6.4 Chrome OS SFTP 挂载
 
 在 Chrome OS 上还可创建 SFTP 挂载，直接在 Files App 浏览目标主机文件系统。
 
-### 6.3 文件传输进度监控
+### 6.5 文件传输进度监控
 
 - 文件传输时会显示进度条
 - 大文件传输可以在后台进行
