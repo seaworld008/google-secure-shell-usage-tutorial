@@ -1,368 +1,248 @@
-# 谷歌安全外壳（Google Secure Shell）详细使用教程
+# 谷歌安全外壳（Google Secure Shell）使用教程
 
-## 简介
+## 概要
 
-谷歌安全外壳（Google Secure Shell）是一个基于Chrome浏览器的SSH客户端扩展程序，它允许用户直接在浏览器中连接到远程服务器，无需安装额外的SSH客户端软件。<mcreference link="https://chrome.google.com/webstore/detail/secure-shell/iodihamcpbpeioajjeobimgagajmlibd" index="2">2</mcreference> 该扩展由Google开发，提供xterm兼容的终端模拟器和独立的SSH客户端功能。<mcreference link="https://chrome.google.com/webstore/detail/secure-shell/iodihamcpbpeioajjeobimgagajmlibd" index="2">2</mcreference>
+本指南涵盖了 Google Secure Shell 扩展的以下内容：
 
-**当前版本：** 0.68（2025年2月更新）<mcreference link="https://chromium.googlesource.com/apps/libapps/+/HEAD/nassh/docs/ChangeLog.md" index="1">1</mcreference>
+- **安装**：如何在各种平台上添加并启动扩展/应用
+- **第一次连接与保存会话**：创建并保存 SSH 连接
+- **自定义外观**：如何更改字体、字号、配色方案，并示例热门字体配置
+- **会话管理**：保存密码与私钥、会话同步，以及在浏览器中像书签一样管理多个连接
+- **多窗口/多标签并行连接**：同时打开多个 SSH 会话的技巧
+- **文件上传/下载**：使用内置 SFTP 客户端执行文件传输
 
-**官方地址：** https://chromewebstore.google.com/detail/iodihamcpbpeioajjeobimgagajmlibd?utm_source=item-share-cb
+**当前版本：** 0.68（2025年2月更新）
 
-**重要提醒：** Chrome App版本已被弃用，所有用户（包括ChromeOS用户）应尽快迁移到扩展版本。<mcreference link="https://chrome.google.com/webstore/detail/deprecated-secure-shell-a/pnhechapfaindjhompbnflcldabbghjo" index="5">5</mcreference>
+## 1. 安装
 
-## 安装步骤
+### 1.1 Chrome 扩展与 App 版本
 
-### 1. 安装Chrome扩展
+**Chrome/Windows/macOS/Linux 用户**：请安装 [Secure Shell Extension](https://chrome.google.com/webstore/detail/pnhechapfaindjhompbnflcldabbghjo)
 
-1. 打开Chrome浏览器
-2. 访问上述官方地址
-3. 点击「添加至Chrome」按钮
-4. 在弹出的确认对话框中点击「添加扩展程序」
-5. 安装完成后，在Chrome的扩展程序栏会出现SSH图标
+**Chrome OS 用户**：建议安装 [Secure Shell App](https://chrome.google.com/webstore/detail/iodihamcpbpeioajjeobimgagajmlibd)
 
-### 2. 启动应用
+在 Chrome 浏览器中访问 Web Store 页面，点击 "Add to Chrome" 即可完成安装。
 
-- 方法一：点击Chrome工具栏中的SSH图标
-- 方法二：在Chrome地址栏输入 `chrome://apps/` 然后点击「Secure Shell App」
-- 方法三：在新标签页的应用程序中找到并点击
+### 1.2 启动方式
 
-## 基本配置和使用
+- **扩展图标**：点击浏览器工具栏中的小黑色终端图标，再选择 "Connection Dialog"
+- **命令行快捷**：在地址栏输入 `ssh`，然后按 Tab → Enter
+- **App 版**：在 `chrome://apps` 或 Web Store 的 "Launch App" 按钮中启动
 
-### 1. 创建SSH连接
+## 2. 第一次连接与保存会话
 
-1. 启动应用后，点击「[New Connection]」
-2. 填写连接信息：
-   - **Username（用户名）**：远程服务器的用户名
-   - **Hostname（主机名）**：服务器IP地址或域名
-   - **Port（端口）**：SSH端口（默认22）
-   - **Connection Name（连接名称）**：为此连接起一个便于识别的名字
+### 2.1 创建新连接
 
-3. 点击「Connect」建立连接
-4. 首次连接时会提示输入密码
+1. 打开连接对话框后，确保左上角选择 "New Connection"
+2. 在文本框中输入 `用户名@主机名[:端口]`（如 `root@192.168.1.100:2222`），也可直接输入自定义名称
+3. 若未自动填充，可手动在下方分别填写 用户名 (Username)、主机 (Hostname)、端口 (Port)
+4. 点击 "Connect" 或按 Enter 建立连接
 
-### 2. 保存SSH会话
+### 2.2 保存并重连
 
-连接成功后，该连接会自动保存在连接列表中，下次可以直接点击连接名称快速连接。
+- 首次连接后，下次可直接在名称框中选择已保存的连接，无需重复填写
+- 也可在连接对话框或扩展管理页中 右键 → Bookmark，将会话作为书签保存
 
-### 3. 保存密码（密钥认证）
+## 3. 自定义外观
 
-#### 方法一：使用SSH密钥（推荐）
+所有外观设置均在 Secure Shell Options 页面（Chrome 扩展设置 → "Options"）下的 Terminal Settings → Appearance 中完成。
 
-1. 在连接配置中，点击「Import...」
-2. 选择你的私钥文件（通常是 `id_rsa` 或 `id_ed25519`）
-3. 如果私钥有密码保护，输入密钥密码
-4. 保存后，以后连接将自动使用密钥认证
+### 3.1 选择与配置字体
 
-#### 方法二：生成新密钥对
+**字体选择**：建议使用等宽字体；扩展默认提供以下 Web 字体：
+- Cousine, Inconsolata, Roboto Mono, Source Code Pro
+- Powerline 系列：Powerline For Cousine, Powerline For Inconsolata…
 
-1. 在主界面点击「Generate...」
-2. 选择密钥类型（推荐 Ed25519）
-3. 设置密钥长度和密码（可选）
-4. 生成后将公钥添加到服务器的 `~/.ssh/authorized_keys` 文件中
-
-## 字体和外观配置
-
-### 1. 访问设置
-
-1. 在SSH连接窗口中，按 `Ctrl + Shift + P`（Windows/Linux）或 `Cmd + Shift + P`（Mac）
-2. 或者右键点击终端区域，选择「Settings」
-
-### 2. 字体配置
-
-在设置页面中找到「Appearance」部分：
-
-#### 热门字体推荐及配置：
-
-**1. Fira Code（支持连字符）**
-```
-font-family: 'Fira Code', monospace
-font-size: 14
+**示例：使用 Google Web Fonts**
+在 Custom CSS URI 或 user-css-text 中添加：
+```css
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+x-row {
+  font-family: "Roboto Mono", monospace;
+}
 ```
 
-**2. JetBrains Mono**
-```
-font-family: 'JetBrains Mono', monospace
-font-size: 14
-```
-
-**3. Cascadia Code（微软开发）**
-```
-font-family: 'Cascadia Code', monospace
-font-size: 14
-```
-
-**4. Source Code Pro**
-```
-font-family: 'Source Code Pro', monospace
-font-size: 14
+**示例：Powerline 字体**
+```css
+@font-face {
+  font-family: "Anonymous Pro";
+  src: url("https://cdn.rawgit.com/wernight/powerline-web-fonts/8040cf32c146c7cd4f776c1484d23dc40685c1bc/fonts/AnonymousPro.woff2") format("woff2");
+}
+x-row {
+  font-family: "Anonymous Pro", monospace;
+}
 ```
 
-**5. Consolas（Windows系统字体）**
-```
-font-family: 'Consolas', monospace
-font-size: 14
-```
+### 3.2 字号 & 缩放
 
-### 3. 颜色主题配置
+- 默认字号在 Appearance → Font size 中设置
+- 快捷临时放大/缩小：`Ctrl + Plus/Minus/Zero`
 
-#### 暗色主题示例：
-```
-background-color: #1e1e1e
-foreground-color: #d4d4d4
-cursor-color: #ffffff
-```
+### 3.3 其他配色与光标
 
-#### 亮色主题示例：
-```
-background-color: #ffffff
-foreground-color: #000000
-cursor-color: #000000
-```
+- **配色方案**：可输入任何合法 CSS 颜色值（支持 rgba 半透明）
+- **光标闪烁**：Appearance → Cursor blink 开关
 
-#### Solarized Dark主题：
-```
-background-color: #002b36
-foreground-color: #839496
-cursor-color: #93a1a1
-```
+## 4. 会话管理
 
-### 4. 完整配置示例
+### 4.1 保存密码与私钥
 
-在设置页面中，可以通过以下方式配置终端外观：
+**密码自动保存**：Chrome 自带密码管理会提示是否保存，不会与扩展同步（仅本地存储）
 
-**字体设置：**
-```
-font-family: 'Fira Code', 'JetBrains Mono', monospace
-font-size: 14
-```
+**私钥管理**：
+- 在连接对话框中点击 "Import"，上传 id_rsa（私钥）与 id_rsa.pub（公钥），存储于 HTML5 文件系统
+- 删除私钥：选中身份后按 Delete 即可清除
 
-**颜色设置：**
-```
-background-color: #1e1e1e
-foreground-color: #d4d4d4
-cursor-color: #ffffff
-```
+### 4.2 同步与多设备
 
-**行为设置：**
-```
-cursor-blink: true
-scrollbar-visible: true
-scroll-on-output: false
-scroll-on-keystroke: true
-```
+**Chrome Sync**：连接信息、偏好设置同步，私钥不上传云端；在不同设备重装时需重新导入私钥
 
-**注意：** 设置页面可以通过右键点击终端区域并选择「Settings」或按 `Ctrl + Shift + P` 访问。
+## 5. 多窗口/多标签并行连接
 
-## 多窗口管理
+- **Ctrl + 点击 "Connection Dialog"**：可在新标签打开连接界面
+- **Chrome App 模式**：右键扩展图标 → "Create shortcut…" → 选 "Open as window"
+- **使用书签**：将带有连接参数的 URL 收藏，点击即可并行发起多个 SSH 会话
 
-### 1. 打开多个SSH窗口
+## 6. 文件上传/下载
 
-#### 方法一：新标签页方式
-1. 在已有SSH连接的标签页中，按 `Ctrl + T` 打开新标签页
-2. 在新标签页中访问 `chrome://apps/` 并启动Secure Shell App
-3. 建立新的SSH连接
+Secure Shell 内置 SFTP 客户端，无需额外安装。
 
-#### 方法二：右键菜单方式
-1. 右键点击Chrome工具栏中的SSH图标
-2. 选择「在新标签页中打开」
-3. 重复此操作可打开多个实例
+### 6.1 基本 SFTP 操作
 
-#### 方法三：书签方式
-1. 将 `chrome-extension://iodihamcpbpeioajjeobimgagajmlibd/html/nassh.html` 添加为书签
-2. 可以创建多个书签，每个对应不同的连接配置
-3. 通过书签栏快速打开多个SSH会话
-
-### 2. 窗口管理技巧
-
-- **标签页重命名**：右键点击标签页，选择重命名，输入服务器名称便于识别
-- **固定标签页**：右键点击标签页，选择「固定标签页」，标签页会变小并固定在左侧
-- **标签页分组**：右键选择「将标签页添加到新群组」，可以按项目或环境分组管理
-
-### 3. 快捷键操作
-
-- `Ctrl + Shift + T`：重新打开最近关闭的标签页
-- `Ctrl + Tab`：切换到下一个标签页
-- `Ctrl + Shift + Tab`：切换到上一个标签页
-- `Ctrl + W`：关闭当前标签页
-- `Ctrl + Shift + N`：打开新的隐身窗口
-
-## 文件传输功能
-
-### 1. SFTP文件管理器
-
-#### 启用SFTP功能：
-**方法一：连接对话框中启用**
-1. 在创建新连接时，勾选「SFTP Mount」选项
-2. 设置「Mount Path」（默认为用户主目录，可设置为"/"访问根目录）<mcreference link="https://superuser.com/questions/1532799/mounting-sftp-to-files-on-chromeos-using-secure-shell-app-but-no-files-are-showi" index="3">3</mcreference>
-3. 连接成功后会自动在Chrome OS的文件应用中创建SFTP挂载点
-
-**方法二：已有连接中启用**
-1. 在SSH连接建立后，点击「SFTP Mount」按钮
-2. 输入密码进行认证
-3. 挂载点会出现在文件应用的侧边栏中
-
-#### 使用SFTP界面：
-1. **Chrome OS用户**：SFTP挂载会直接显示在文件应用中，无需保持SSH窗口打开<mcreference link="https://www.reddit.com/r/chromeos/comments/68nov6/secure_shell_app_now_does_sftp/" index="2">2</mcreference>
-2. **其他平台用户**：界面会分为两部分：终端和文件管理器
-3. 可以通过图形界面浏览、上传、下载文件
-4. 支持从文件应用直接访问远程文件系统<mcreference link="https://secure-shell.en.softonic.com/chrome/extension" index="4">4</mcreference>
-
-### 2. 文件上传
-
-#### 方法一：拖拽上传
-1. 直接将本地文件拖拽到SFTP文件管理器窗口
-2. 文件会自动上传到当前目录
-
-#### 方法二：右键上传
-1. 在SFTP文件管理器中右键点击空白区域
-2. 选择「Upload Files」
-3. 选择要上传的文件
-
-#### 方法三：命令行上传（使用rz命令）
+在终端中输入：
 ```bash
-# 首先在服务器上安装lrzsz
-sudo apt-get install lrzsz  # Ubuntu/Debian
-sudo yum install lrzsz      # CentOS/RHEL
-sudo dnf install lrzsz      # Fedora
-
-# 使用rz命令接收文件
-rz
-```
-然后在弹出的对话框中选择要上传的文件。
-
-**注意：** 现代版本的Google Secure Shell主要依赖SFTP协议进行文件传输，rz/sz命令可能在某些配置下不可用。<mcreference link="https://www.digitalocean.com/community/tutorials/how-to-use-sftp-to-securely-transfer-files-with-a-remote-server" index="2">2</mcreference>
-
-### 3. 文件下载
-
-#### 方法一：SFTP界面下载
-1. 在SFTP文件管理器中右键点击要下载的文件
-2. 选择「Download」
-3. 选择本地保存位置
-
-#### 方法二：命令行下载（使用sz命令）
-```bash
-# 下载单个文件
-sz filename
-
-# 下载多个文件
-sz file1 file2 file3
+sftp 用户名@主机[:端口]
 ```
 
-### 4. 批量文件操作
+使用标准命令：
+- `get remote_path [local_path]` 下载文件
+- `put local_path [remote_path]` 上传文件
+- `ls` 列出远程目录
+- `lls` 列出本地目录
+- `cd` 切换远程目录
+- `lcd` 切换本地目录
 
-#### 批量上传：
-1. 选择多个文件（按住Ctrl键点击）
-2. 拖拽到SFTP窗口
-3. 或使用「Upload Files」选择多个文件
+### 6.2 Chrome OS SFTP 挂载
 
-#### 批量下载：
-1. 在SFTP界面中按住Ctrl键选择多个文件
-2. 右键选择「Download Selected」
+在 Chrome OS 上还可创建 SFTP 挂载，直接在 Files App 浏览目标主机文件系统。
 
-### 5. 文件传输进度监控
+### 6.3 文件传输进度监控
 
 - 文件传输时会显示进度条
 - 大文件传输可以在后台进行
 - 传输完成后会有通知提示
-- **新功能**：支持使用File System Access API保存大文件<mcreference link="https://chromium.googlesource.com/apps/libapps/+/HEAD/nassh/docs/ChangeLog.md" index="1">1</mcreference>
-- **断点续传**：支持下载中断后的续传功能（reget命令）<mcreference link="https://chromium.googlesource.com/apps/libapps/+/HEAD/nassh/docs/ChangeLog.md" index="1">1</mcreference>
+- **新功能**：支持使用File System Access API保存大文件
+- **断点续传**：支持下载中断后的续传功能（reget命令）
 
-## 高级配置
+## 7. 高级配置
 
-### 1. SSH隧道配置
+### 7.1 SSH隧道配置
 
 #### 本地端口转发：
-在连接配置的「SSH Relay Server Options」中添加：
-```
---ssh-agent=<extension_id>
-```
-
-#### 使用SSH Agent扩展：
-Google提供了专门的SSH Agent扩展来管理密钥：<mcreference link="https://github.com/google/chrome-ssh-agent" index="4">4</mcreference>
-1. 安装SSH Agent for Google Chrome扩展
-2. 在连接配置中添加：`--ssh-agent=eechpbnaifiimgajnomdipfaamobdfha`
-3. 这样可以使用智能卡或其他高级认证方式
-
-#### 端口转发示例：
-```
-# 本地端口转发
+```bash
 ssh -L 本地端口:目标主机:目标端口 用户名@跳板机
+```
 
-# 远程端口转发
+#### 远程端口转发：
+```bash
 ssh -R 远程端口:本地主机:本地端口 用户名@远程主机
 ```
 
-### 2. 连接保持配置
-
-在连接的「SSH Relay Server Options」中添加：
+#### 动态端口转发（SOCKS代理）：
+```bash
+ssh -D 本地端口 用户名@远程主机
 ```
---resume-connection
-```
-这将启用自动重连功能。<mcreference link="https://chromium.googlesource.com/apps/libapps/+/master/nassh/doc/options.md" index="1">1</mcreference>
 
-或在SSH配置文件中添加：
+#### 在Google Secure Shell中配置SSH隧道：
+1. 在连接配置中，找到「SSH Relay Server Options」
+2. 添加相应的端口转发参数
+3. 例如：`--ssh-client-version=2 -L 8080:localhost:80`
+
+
+
+### 7.2 连接保持配置
+
+防止连接超时，在SSH连接配置中添加：
 ```
 ServerAliveInterval 60
 ServerAliveCountMax 3
 ```
 
-### 3. 自定义快捷键
+### 7.3 自定义快捷键
 
 在设置中可以配置：
 - 复制：`Ctrl + Shift + C`
 - 粘贴：`Ctrl + Shift + V`
 - 清屏：`Ctrl + L`
 - 中断：`Ctrl + C`
-- 新连接：`Ctrl + Shift + N`<mcreference link="https://chromium.googlesource.com/apps/libapps/+/HEAD/nassh/docs/ChangeLog.md" index="1">1</mcreference>
+- 新连接：`Ctrl + Shift + N`
 
-**注意：** 更多键盘绑定和快捷键配置可以在官方FAQ中找到详细说明。<mcreference link="https://chromium.googlesource.com/apps/libapps/+/hterm-1.80/nassh/doc/FAQ.md" index="2">2</mcreference>
+**注意：** 更多键盘绑定和快捷键配置可以在官方FAQ中找到详细说明。
 
-## 故障排除
+## 8. 故障排除
 
-### 1. 连接问题
+### 8.1 连接问题
 
-**问题：无法连接到服务器**
+#### 连接超时：
 - 检查网络连接
 - 确认服务器IP和端口正确
 - 检查防火墙设置
-- 确认SSH服务正在运行
+- 尝试使用其他SSH客户端验证
 
-**问题：认证失败**
-- 检查用户名和密码
-- 确认SSH密钥配置正确
-- 检查服务器的SSH配置
+#### 认证失败：
+- 确认用户名和密码正确
+- 检查SSH密钥是否正确导入
+- 验证服务器是否允许密钥认证
+- 检查密钥文件权限
 
-### 2. 字体显示问题
+#### 连接中断：
+- 启用连接保持功能
+- 检查网络稳定性
+- 调整超时设置
 
-**问题：字体不显示或显示异常**
-- 确保系统已安装指定字体
-- 尝试使用系统默认等宽字体
-- 清除浏览器缓存后重试
+### 8.2 字体显示问题
 
-### 3. 文件传输问题
+#### 字体不生效：
+- 确认字体名称拼写正确
+- 检查字体是否已安装在系统中
+- 尝试使用Web字体
+- 清除浏览器缓存
 
-**问题：无法上传/下载文件**
-- 检查SFTP功能是否启用
+#### 中文显示乱码：
+- 设置正确的字符编码（UTF-8）
+- 确认服务器locale设置
+- 检查终端字体是否支持中文
+
+### 8.3 文件传输问题
+
+#### SFTP连接失败：
 - 确认服务器支持SFTP
-- 检查文件权限
+- 检查用户权限
+- 验证SSH连接正常
+
+#### 文件上传失败：
+- 检查目标目录权限
 - 确认磁盘空间充足
+- 验证文件大小限制
 
-## 最佳实践
+## 9. 最佳实践
 
-### 1. 安全建议
+### 9.1 安全建议
 
-- 使用SSH密钥认证而非密码认证
-- 定期更换SSH密钥
-- 不要在公共网络上保存敏感连接信息
-- 使用强密码保护私钥
+- **使用SSH密钥认证**：比密码认证更安全
+- **定期更换密钥**：建议每年更换一次SSH密钥
+- **禁用密码认证**：在服务器上禁用密码登录，仅允许密钥认证
+- **使用强密码**：如果必须使用密码，确保密码复杂度足够
+- **限制登录IP**：在服务器上配置允许登录的IP地址范围
 
-### 2. 性能优化
+### 9.2 性能优化
 
-- 关闭不必要的视觉效果
-- 适当调整字体大小和缓冲区大小
-- 定期清理连接历史
+- **选择合适的加密算法**：在安全和性能之间找到平衡
+- **启用压缩**：对于慢速网络连接，启用SSH压缩可以提高传输速度
+- **调整缓冲区大小**：根据网络条件调整SSH缓冲区大小
+- **使用连接复用**：对于频繁连接，启用SSH连接复用
 
-### 3. 工作流程建议
+### 9.3 工作流程建议
 
 - 为不同项目创建不同的连接配置
 - 使用有意义的连接名称
@@ -371,7 +251,7 @@ ServerAliveCountMax 3
 - **新功能**：支持同步SSH配置文件（/etc/ssh/ssh_config 和 /etc/ssh/ssh_known_hosts）<mcreference link="https://chromium.googlesource.com/apps/libapps/+/HEAD/nassh/docs/ChangeLog.md" index="1">1</mcreference>
 - 利用Chrome同步功能在多设备间同步连接配置
 
-## 总结
+## 10. 总结
 
 谷歌安全外壳是一个功能强大且易于使用的SSH客户端，特别适合需要在浏览器环境中进行远程服务器管理的用户。通过合理的配置和使用技巧，可以大大提高工作效率。
 
@@ -392,7 +272,9 @@ ServerAliveCountMax 3
 - 使用SSH密钥认证替代密码认证以提高安全性
 - 关注官方更新日志了解新功能和改进
 
-**官方资源：**
-- FAQ：https://hterm.org/x/ssh/faq
-- 更新日志：https://hterm.org/x/ssh/changelog
-- 邮件列表：https://hterm.org/x/ssh/contact
+## 文档编写参考资料
+
+- [Chrome Web Store: Secure Shell Extension](https://chrome.google.com/webstore/detail/pnhechapfaindjhompbnflcldabbghjo)
+- [hterm/Secure Shell FAQ](https://hterm.org/x/ssh/faq)
+- [官方更新日志](https://hterm.org/x/ssh/changelog)
+- [邮件列表](https://hterm.org/x/ssh/contact)
